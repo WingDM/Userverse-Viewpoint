@@ -1,8 +1,8 @@
 // User URLs
-const fraeddicUMLUrl = "https://fraeddic-userverse-user.github.io/fraeddic.uml";
-const fraeddicCMLUrl = "https://fraeddic-userverse-user.github.io/userverse_first_post.cml";
-const johnDoeUMLUrl = "https://john-doe-userverse-user.github.io/john_doe.uml";
-const johnDoeCMLUrl = "https://john-doe-userverse-user.github.io/second_post_userverse.cml";
+const fraeddicUMLUrl = "https://wingdm.github.io/Fraeddic-Userverse-User/fraeddic.uml";
+const fraeddicCMLUrl = "https://wingdm.github.io/Fraeddic-Userverse-User/userverse_first_post.cml";
+const johnDoeUMLUrl = "https://wingdm.github.io/John-Doe-Userverse-User/john_doe.uml";
+const johnDoeCMLUrl = "https://wingdm.github.io/John-Doe-Userverse-User/second_post_userverse.cml";
 
 function displayUser(umlUrl, cmlUrl){
     // Fetch and Parse UML

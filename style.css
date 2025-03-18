@@ -1,0 +1,19 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+}
+
+#user-profile {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#post-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+#profile_image {
+    max-width: 150px;
+}

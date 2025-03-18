@@ -1,72 +1,62 @@
-// Replace with the user's handle
-const userHandle = "@fraeddic#fraeddic.neocities.org";
-const userDomain = userHandle.split("#")[1];
-const userName = userHandle.split("@")[1].split("#")[0];
+// User URLs
+const fraeddicUMLUrl = "https://fraeddic-userverse-user.github.io/fraeddic.uml";
+const fraeddicCMLUrl = "https://fraeddic-userverse-user.github.io/userverse_first_post.cml";
+const johnDoeUMLUrl = "https://john-doe-userverse-user.github.io/john_doe.uml";
+const johnDoeCMLUrl = "https://john-doe-userverse-user.github.io/second_post_userverse.cml";
 
-const userUMLUrl = `https://${userDomain}/${userName}.uml`;
-const userCMLUrl = `https://${userDomain}/userverse_first_post.cml`; // Assuming .cml for the post
+function displayUser(umlUrl, cmlUrl){
+    // Fetch and Parse UML
+    fetch(umlUrl)
+        .then(response => response.text())
+        .then(uml => {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(uml, "application/xml");
+            document.getElementById('display_name').textContent = xmlDoc.querySelector('dn').textContent;
+            document.getElementById('bio').textContent = xmlDoc.querySelector('bio').textContent;
+            document.getElementById('email').textContent = xmlDoc.querySelector('em').textContent;
+            document.getElementById('profile_icon').src = xmlDoc.querySelector('ic').getAttribute('src');
 
-// Fetch and Parse UML
-fetch(userUMLUrl)
-    .then(response => response.text())
-    .then(uml => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(uml, "application/xml");
-        document.getElementById('display_name').textContent = xmlDoc.querySelector('u').getAttribute('d');
-        document.getElementById('bio').textContent = xmlDoc.querySelector('bio').textContent;
-        document.getElementById('profile_image').src = xmlDoc.querySelector('i').getAttribute('src');
+            const style = document.createElement('style');
+            style.innerHTML = xmlDoc.querySelector('style').textContent;
+            document.head.appendChild(style);
 
-        const style = document.createElement('style');
-        style.innerHTML = xmlDoc.querySelector('css').textContent;
-        document.head.appendChild(style);
-
-    });
-
-// Fetch and Parse CML
-fetch(userCMLUrl)
-    .then(response => response.text())
-    .then(cml => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(cml, "application/xml");
-        document.getElementById('post_title').textContent = xmlDoc.querySelector('p').getAttribute('t');
-        document.getElementById('post_description').textContent = xmlDoc.querySelector('des').textContent;
-        const postContent = document.getElementById('post_content');
-        const content = xmlDoc.querySelector('con');
-
-        // Handle various content types
-        for (const child of content.children) {
-            if (child.tagName === 'txt') {
-                postContent.innerHTML += `<p>${child.textContent}</p>`;
-            } else if (child.tagName === 'i') {
-                postContent.innerHTML += `<img src="${child.getAttribute('src')}" alt="Post Image">`;
-            } else if (child.tagName === 'vid') {
-                postContent.innerHTML += `<video src="${child.getAttribute('src')}" controls></video>`;
-            } else if (child.tagName === 'lnk') {
-                postContent.innerHTML += `<a href="${child.getAttribute('href')}" target="_blank">${child.getAttribute('href')}</a>`;
+            const website = xmlDoc.querySelector('web');
+            if (website) {
+                document.getElementById('website').innerHTML = `<a href="${website.textContent}" target="_blank">Website</a>`;
             }
-        }
-        document.getElementById('post_date').textContent = xmlDoc.querySelector('dat').textContent;
-
-        const tags = xmlDoc.querySelectorAll('tag');
-        const tagContainer = document.getElementById('post_tags');
-        tags.forEach(tag => {
-            tagContainer.innerHTML += `<span>#${tag.textContent} </span>`;
         });
 
-        //Basic comment display.
-        const comments = xmlDoc.querySelectorAll('com');
-        const commentContainer = document.getElementById('post_comments');
-        comments.forEach(comment => {
-            commentContainer.innerHTML += `<p>Comment: ${comment.querySelector('txt').textContent}</p>`;
+    // Fetch and Parse CML
+    fetch(cmlUrl)
+        .then(response => response.text())
+        .then(cml => {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(cml, "application/xml");
+            document.getElementById('post_title').textContent = xmlDoc.querySelector('p').getAttribute('title');
+            document.getElementById('post_description').textContent = xmlDoc.querySelector('d').textContent;
+            const postContent = document.getElementById('post_content');
+            const content = xmlDoc.querySelector('c');
+
+            for (const child of content.children) {
+                if (child.tagName === 'txt') {
+                    postContent.innerHTML += `<p>${child.textContent}</p>`;
+                } else if (child.tagName === 'img') {
+                    postContent.innerHTML += `<img src="${child.getAttribute('src')}" alt="Post Image">`;
+                } else if (child.tagName === 'vid') {
+                    postContent.innerHTML += `<video src="${child.getAttribute('src')}" controls></video>`;
+                }
+            }
         });
+}
 
-        //Basic like display.
-        const likes = xmlDoc.querySelectorAll('lik');
-        const likeContainer = document.getElementById('post_likes');
-        likeContainer.innerHTML += `<p>Likes: ${likes.length}</p>`;
+//display fraeddic by default.
+displayUser(fraeddicUMLUrl, fraeddicCMLUrl);
 
-        //basic share display.
-        const shares = xmlDoc.querySelectorAll('shr');
-        const shareContainer = document.getElementById('post_shares');
-        shareContainer.innerHTML += `<p>Shares: ${shares.length}</p>`;
-    });
+//add event listeners to the buttons.
+document.getElementById("fraeddicButton").addEventListener("click", function(){
+    displayUser(fraeddicUMLUrl, fraeddicCMLUrl);
+});
+
+document.getElementById("johnDoeButton").addEventListener("click", function(){
+    displayUser(johnDoeUMLUrl, johnDoeCMLUrl);
+});
